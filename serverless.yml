@@ -1,0 +1,81 @@
+service: foodfight-serverless
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: python3.7
+  environment:
+    USER_DYNAMODB_TABLE: ${self:service}-USER-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.USER_DYNAMODB_TABLE}"
+
+
+functions:
+  user-create:
+    handler: user/create.create
+    events:
+      - http:
+          path: user
+          method: post
+          cors: true
+
+  user-list:
+    handler: user/list.list
+    events:
+      - http:
+          path: user
+          method: get
+          cors: true
+
+  user-get:
+    handler: user/get.get
+    events:
+      - http:
+          path: user/{id}
+          method: get
+          cors: true
+
+  user-update:
+    handler: user/update.update
+    events:
+      - http:
+          path: user/{id}
+          method: put
+          cors: true
+
+  user-delete:
+    handler: user/delete.delete
+    events:
+      - http:
+          path: user/{id}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    FoodFightUserDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.USER_DYNAMODB_TABLE}
