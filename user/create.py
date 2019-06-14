@@ -11,19 +11,20 @@ dynamodb = boto3.resource('dynamodb')
 def create(event, context):
     data = json.loads(event['body'])
     if 'username' not in data:
-        logging.error("Validation Failed")
-        raise Exception("Couldn't create the user.")
+        logging.error("Validation Failed - no username provided")
+        raise Exception("Couldn't create the user - no username provided")
 
     timestamp = int(time.time() * 1000)
 
     table = dynamodb.Table(os.environ['USER_DYNAMODB_TABLE'])
 
     item = {
-        'id': str(uuid.uuid1()),
+        #'id': str(uuid.uuid1()),
         'username': data['username'],
-        'checked': False,
         'createdAt': timestamp,
         'updatedAt': timestamp,
+        'weapon': 1,
+        'armor': 1,
     }
 
     # write the user to the database

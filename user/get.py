@@ -1,7 +1,7 @@
 import os
 import json
 
-from todos import decimalencoder
+from user import decimalencoder
 import boto3
 dynamodb = boto3.resource('dynamodb')
 
@@ -12,7 +12,7 @@ def get(event, context):
     # fetch user from the database
     result = table.get_item(
         Key={
-            'id': event['pathParameters']['id']
+            'username': event['pathParameters']['username']
         }
     )
 

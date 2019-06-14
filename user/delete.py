@@ -10,7 +10,7 @@ def delete(event, context):
     # delete the user from the database
     table.delete_item(
         Key={
-            'id': event['pathParameters']['id']
+            'id': event['pathParameters']['username']
         }
     )
 

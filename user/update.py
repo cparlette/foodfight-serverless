@@ -3,14 +3,14 @@ import time
 import logging
 import os
 
-from todos import decimalencoder
+from user import decimalencoder
 import boto3
 dynamodb = boto3.resource('dynamodb')
 
 
 def update(event, context):
     data = json.loads(event['body'])
-    if 'username' not in data or 'checked' not in data:
+    if 'weapon' not in data or 'armor' not in data:
         logging.error("Validation Failed")
         raise Exception("Couldn't update the user.")
         return
@@ -22,18 +22,15 @@ def update(event, context):
     # update the user in the database
     result = table.update_item(
         Key={
-            'id': event['pathParameters']['id']
-        },
-        ExpressionAttributeNames={
-          '#user_username': 'username',
+            'username': event['pathParameters']['username']
         },
         ExpressionAttributeValues={
-          ':username': data['username'],
-          ':checked': data['checked'],
+          ':weapon': data['weapon'],
+          ':armor': data['armor'],
           ':updatedAt': timestamp,
         },
-        UpdateExpression='SET #user_username = :username, '
-                         'checked = :checked, '
+        UpdateExpression='SET weapon = :weapon, '
+                         'armor = :armor, '
                          'updatedAt = :updatedAt',
         ReturnValues='ALL_NEW',
     )

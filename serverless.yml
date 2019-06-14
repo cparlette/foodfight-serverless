@@ -41,7 +41,7 @@ functions:
     handler: user/get.get
     events:
       - http:
-          path: user/{id}
+          path: user/{username}
           method: get
           cors: true
 
@@ -49,7 +49,7 @@ functions:
     handler: user/update.update
     events:
       - http:
-          path: user/{id}
+          path: user/{username}
           method: put
           cors: true
 
@@ -57,7 +57,7 @@ functions:
     handler: user/delete.delete
     events:
       - http:
-          path: user/{id}
+          path: user/{username}
           method: delete
           cors: true
 
@@ -69,11 +69,11 @@ resources:
       Properties:
         AttributeDefinitions:
           -
-            AttributeName: id
+            AttributeName: username
             AttributeType: S
         KeySchema:
           -
-            AttributeName: id
+            AttributeName: username
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
