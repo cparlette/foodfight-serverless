@@ -19,12 +19,13 @@ def create(event, context):
     table = dynamodb.Table(os.environ['USER_DYNAMODB_TABLE'])
 
     item = {
-        #'id': str(uuid.uuid1()),
         'username': data['username'],
         'createdAt': timestamp,
         'updatedAt': timestamp,
         'weapon': 1,
         'armor': 1,
+        'money': 500,
+        'health': 100,
     }
 
     # write the user to the database
