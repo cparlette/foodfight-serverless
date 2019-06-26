@@ -35,6 +35,9 @@ def update(event, context):
         ReturnValues='ALL_NEW',
     )
 
+    # remove the password field, it causes problems
+    result['Attributes'].pop('password', None)
+
     # create a response
     response = {
         "statusCode": 200,

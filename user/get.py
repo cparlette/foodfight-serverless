@@ -16,6 +16,9 @@ def get(event, context):
         }
     )
 
+    # remove the password field, it causes problems
+    result['Item'].pop('password', None)
+
     # create a response
     response = {
         "statusCode": 200,

@@ -13,6 +13,14 @@ The idea behind the `user` directory is that in the future, there will be a sepa
 
 Follow the official [Serverless installation instructions](https://serverless.com/framework/docs/providers/aws/guide/installation/) to ensure you have the Serverless NPM package installed, along with your AWS credentials set up on your local machine.
 
+Create a KMS Key in the AWS console and copy the key ID for use below.
+
+Add the KMS key to SSM using:
+
+```bash
+aws ssm put-parameter --name foodfight-kms-key-id --type String --value insert_kms_key_id_here
+```
+
 ## Deploy
 
 In order to deploy the endpoint, run
@@ -110,3 +118,9 @@ No output
 ## References used
 
 Originally modified from [an official Serverless example](https://github.com/serverless/examples/tree/master/aws-python-rest-api-with-dynamodb)
+
+Basic Auth example used from [Sander van de Graaf](https://svdgraaf.nl/2018/06/01/Serverless-Basic-Authentication-Custom-Authorizer.html)
+
+Password encryption example from [https://gist.github.com/JohnPreston/6c6dcd0e726219a10111182891f8547b](https://gist.github.com/JohnPreston/6c6dcd0e726219a10111182891f8547b)
+
+Info about custom authorizers for API Gateway from [Alex Debrie](https://www.alexdebrie.com/posts/lambda-custom-authorizers/)

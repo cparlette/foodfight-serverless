@@ -1,4 +1,6 @@
-service: foodfight-serverless
+service:
+  name: foodfight-serverless
+
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,6 +10,7 @@ provider:
   runtime: python3.7
   environment:
     USER_DYNAMODB_TABLE: ${self:service}-USER-${opt:stage, self:provider.stage}
+    KMS_KEY_ID: ${ssm:foodfight-kms-key-id}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -18,7 +21,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.USER_DYNAMODB_TABLE}"
-
+    - Effect: Allow
+      Action:
+        - kms:Decrypt
+      Resource: { "Fn::Join" : ["", ["arn:aws:kms:${self:provider.region}:", { "Ref" : "AWS::AccountId" }, ":key/${self:provider.environment.KMS_KEY_ID}" ] ]  }
 
 functions:
   user-create:
@@ -52,6 +58,10 @@ functions:
           path: user/{username}
           method: put
           cors: true
+          authorizer: 
+            name: auth
+            type: request
+            identitySource: method.request.header.username, method.request.header.password
 
   user-delete:
     handler: user/delete.delete
@@ -60,6 +70,10 @@ functions:
           path: user/{username}
           method: delete
           cors: true
+
+  auth:
+    handler: basicAuth.basicAuth
+    cors: true
 
 resources:
   Resources:
@@ -79,3 +93,24 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.USER_DYNAMODB_TABLE}
+
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+    AuthFailureGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
