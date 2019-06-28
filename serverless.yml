@@ -61,6 +61,7 @@ functions:
           authorizer: 
             name: auth
             type: request
+            resultTtlInSeconds: 0
             identitySource: method.request.header.username, method.request.header.password
 
   user-delete:
@@ -85,6 +86,20 @@ functions:
           authorizer: 
             name: auth
             type: request
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.username, method.request.header.password
+
+  buy_armor:
+    handler: shop/buy_armor.buy_armor
+    events:
+      - http:
+          path: shop/armor/buy/{armor_id}
+          method: put
+          cors: true
+          authorizer: 
+            name: auth
+            type: request
+            resultTtlInSeconds: 0
             identitySource: method.request.header.username, method.request.header.password
 
 
