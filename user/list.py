@@ -12,6 +12,9 @@ def list(event, context):
     # fetch all users from the database
     result = table.scan()
 
+    for item in result['Items']:
+    	item.pop('password', None)
+
     # create a response
     response = {
         "statusCode": 200,
