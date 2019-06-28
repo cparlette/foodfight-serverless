@@ -42,6 +42,18 @@ def create(event, context):
         'armor': 1,
         'money': 500,
         'health': 100,
+        'STR': 10,
+        'DEX': 10,
+        'POT': 10,
+        'CON': 10,
+        'MYS': 10,
+        'INT': 10,
+        'level': 1,
+        'xp': 0,
+        'wins': 0,
+        'losses': 0,
+        'user_fights_remaining': 5,
+        'enemy_fights_remaining': 10,
     }
 
     # write the user to the database
