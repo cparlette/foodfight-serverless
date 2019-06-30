@@ -128,6 +128,19 @@ functions:
             resultTtlInSeconds: 0
             identitySource: method.request.header.username, method.request.header.password
 
+  fight_enemy:
+    handler: fight/fight_enemy.fight_enemy
+    events:
+      - http:
+          path: fight/enemy/{enemy_level}
+          method: put
+          cors: true
+          authorizer: 
+            name: auth
+            type: request
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.username, method.request.header.password
+
 
 resources:
   Resources:

@@ -54,6 +54,7 @@ def create(event, context):
         'losses': 0,
         'user_fights_remaining': 5,
         'enemy_fights_remaining': 10,
+        'active_fight': 'No active fight',
     }
 
     # write the user to the database
